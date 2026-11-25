@@ -1,0 +1,33 @@
+configure terminal
+Enter configuration commands, one per line.  End with CNTL/Z.
+ap-PyAuto(config)#hostname ap-ResortsWorld21
+ap-ResortsWorld21(config)#dot11 ssid ResortsWorld-21Coleen
+ap-ResortsWorld21(config-ssid)#vlan 21
+Warning: Vlan 21 already mapped to SSID CCNAwithAi-21. SSIDs with same vlan association cannot be attached to the same interface.
+
+ap-ResortsWorld21(config-ssid)#authentication open
+ap-ResortsWorld21(config-ssid)#authentication key-management wpa
+ap-ResortsWorld21(config-ssid)#wpa-psk ascii C1sc0123
+ap-ResortsWorld21(config-ssid)#guest-mode
+ap-ResortsWorld21(config-ssid)#default Int Dot11Radio 0
+Cannot disable station-role
+
+Interface Dot11Radio0 set to default configuration
+ap-ResortsWorld21(config)#default interface gigabitEthernet 0
+%command not allowed, cannot remove bridge-group 1
+Interface GigabitEthernet0 set to default configuration
+ap-ResortsWorld21(config)#int dot11radio 0
+ap-ResortsWorld21(config-if)#no shut
+ap-ResortsWorld21(config-if)#channel 12
+Invalid channel-number/frequency
+
+ap-ResortsWorld21(config-if)#encryption mode ciphers tkip
+ap-ResortsWorld21(config-if)#encryption vlan 21 mode ciphers tkip
+ap-ResortsWorld21(config-if)#ssid ResortsWorld-21Coleen
+ap-ResortsWorld21(config-if)#exit
+ap-ResortsWorld21(config)#interface dot11radio 0.21
+ap-ResortsWorld21(config-subif)#encapsulation dot1q 21 native
+ap-ResortsWorld21(config-subif)#bridge-group 1
+ap-ResortsWorld21(config-subif)#exit
+ap-ResortsWorld21(config)#end
+ap-ResortsWorld21#

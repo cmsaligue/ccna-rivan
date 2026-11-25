@@ -1,0 +1,257 @@
+CCNA Day3
+
+### Warm Up
+
+CIDR SUBNET MASK RIVAN WILDCARD
+
+/18     255.255.192.0       3,64i       0.0.63.255
+/27     255.255.255.224     4,32i       0.0.0.31
+/14     255.252.0.0         2,4i        0.3.255.255
+/30     255.255.255.252     4,4i        0.0.0.3
+
+42      6b
+1800    11b
+365     9b
+980     10b
+112     7b
+
+
+
+
+
+PRIVATE IP ADDRESS
+10.0.0.0        -   10.255.255.255      CLASS A     10.0.0.0/8
+172.16.0.0      -   172.31.255.255      CLASS B     172.16.0.0/12
+192.168.0.0     -   192.168.255.255     CLASS C     192.168.0.0/16
+
+
+
+===================
+Department: ADMIN
+12 IPs
+Address Space 10.0.0.0/8
+First Network is Unusable
+
+12u : 4b : /28 : (4,16i) : 10.0.0.16/28 : 10.0.0.17 : 10.0.0.31
+
+
+====================
+1. Design a network for 64 computers using the address space 192.168.53.128/25. The first network is unusable.
+64u : 7b : /25 : (4, 128i)
+192.168.54.0/25
+192.168.54.1 - 192.168.54.126
+192.168.54.127
+
+
+
+============
+!@CoreTAAS
+conf t
+ ip routing
+ int fa0/9
+   no sw
+   no shut
+   ip add 192.168.56.60 255.255.255.192
+end
+
+!@CoreBABA
+conf t
+ ip routing
+ int fa0/9
+   no sw
+   no shut
+   ip add 192.168.56.65 255.255.255.192
+end
+
+
+
+=============
+STATIC ROUTING
+
+Recipe:
+ip route [dest] [mask] [exit-int/next hop]
+
+
+[TASK 1] Configure a static host route from R1 destined to 10.1.1.5
+
+host route -> designated for one IP so /32
+network route -> subnet
+
+!@R1
+conf t
+ ip route 10.1.1.5 255.255.255.255 10.1.1.2
+end
+ping 10.1.1.5
+
+
+[TASK 2] Configure a static HOST route from R1 destined to 10.1.1.6 and verify.
+
+!@R1
+conf t
+ ip route 10.1.1.6 255.255.255.255 10.1.1.2
+end
+ping 10.1.1.6 ### di nagping
+
+
+[TASK 3] Configure Return Traffic. Configure a Static Network Route from R3 destined for R1 10.1.1.1
+
+!@R3
+conf t
+ ip route 10.1.1.0 255.255.255.252 10.1.1.5
+end
+ping 10.1.1.1
+
+
+[TASK 4] Configure a static NETWORK route from R1 to reach R4 10.1.1.10
+
+!@R1
+conf t
+ ip route 10.1.1.8 255.255.255.252 10.1.1.2
+end
+
+!@R4
+conf t
+ ip route 10.1.1.0 255.255.255.252 10.1.1.9
+end
+
+!@R2
+conf t
+ ip route 10.1.1.8 255.255.255.252 10.1.1.6
+end
+
+### Make sure very next hop knows how to reach the destination
+
+
+
+======
+
+
+
+
+
+Configuring Dynamic Routing Protocol
+Step 1. Find the directly connected networks
+
+C1:
+VLAN 10   10.2.1.0/24
+VLAN 20   10.2.2.0/24
+VLAN 100  192.168.1.128/27
+E1/1      10.1.4.4/30
+
+C2:
+VLAN 10   10.2.1.0/24
+VLAN 20   10.2.2.0/24
+VLAN 100  192.168.1.128/27
+E1/1      10.1.4.8/30
+
+
+
+
+EIGRP
+!@C1
+conf t
+ router eigrp 100
+  network 10.2.1.0      0.0.0.255
+  network 10.2.2.0      0.0.0.255
+  network 192.168.1.128 0.0.0.31  
+  network 10.1.4.4      0.0.0.3
+end
+
+!@C2
+conf t
+ router eigrp 100
+  network 10.2.1.0      0.0.0.255
+  network 10.2.2.0      0.0.0.255
+  network 192.168.1.128 0.0.0.31  
+  network 10.1.4.8      0.0.0.3
+end
+
+
+
+
+
+
+================
+Configure R2 & R1 for EIGRP AS 100 -> based sa pic 12:52pm
+- Advertise all Connected Networks
+
+
+!@R1
+conf t
+ router eigrp 100
+  network 10.0.15.64 0.0.0.31
+  network 172.16.160.0 0.0.7.255
+  network 172.16.97.111 0.0.0.0
+end
+
+!@R2
+conf t
+ router eigrp 100
+  network 10.0.15.64 0.0.0.31
+  network 192.168.0.152 0.0.0.3
+  network 10.46.187.22 0.0.0.0
+end
+
+
+
+
+
+
+
+
+
+
+=============
+NAT
+
+!@EDGE
+conf t
+ int g0/0/0
+  ip nat inside
+ !
+ int g0/0/1
+  ip nat outside
+end
+
+!@P1&P2
+conf t
+ ip route 0.0.0.0 0.0.0.0 10.2.1.1
+end
+ping 8.8.8.8
+
+
+
+
+=========
+COMPRESS IPv6 addresses
+1. a:c::/64
+2. ::/0
+3. fe80::a:0:0:f/64 = Link-local
+4. 2002:6500:0:3000::/64
+5. ::1/128 = Loopback/local host
+6. ff00::beef:a00a:aa0:0:0/8 = multicast address
+
+1. 000a:000c:0000:0000:0000:0000:0000:0000/64
+2. 0000:0000:0000:0000:0000:0000:0000:0000/0
+3. fe80:0000:0000:0000:000a:0000:0000:000f/64
+4. 2002:6500:0000:3000:0000:0000:0000:0000/64
+5. 0000:0000:0000:0000:0000:0000:0000:0001/128
+6. ff00:0000:0000:beef:a00a:0aa0:0000:0000/8
+
+
+
+
+================
+IPv6 subnetting
+        butas-hex-i
+1. /77    5 4 8i
+2. /38    3 2 4i
+3. /121   8 3 8i
+
+
+
+===============
+Subnetting questions
+
+Users, admin, pc, hosts = CSI
+Subnets, sites, departments = CAI (usog lang isa)

@@ -1,0 +1,25 @@
+Day2: network engineer training
+
+CIDR: classless interdomain routing
+
+
+
+VLAN7
+SYKEScubao.com
+8500u
+first 100 IP
+
+VLAN8
+SYKESmakati.com
+5000u
+first 100 IP
+
+VLAN9
+SYKESmoa.com
+50u
+first 5 IP
+
+VLAN11
+SYKESayala.com
+200u
+.1 to .25
